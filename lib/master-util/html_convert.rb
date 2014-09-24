@@ -1,4 +1,4 @@
-module HtmlConvert
+module MasterUtil
   def self.to_elements(receiver)
     article_element = []
     receiver.gsub! /\r|\n|\t/, ''
