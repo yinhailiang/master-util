@@ -5,7 +5,7 @@ require 'master-util/version'
 
 Gem::Specification.new do |s|
   s.name        = 'master-util'
-  s.version     = '0.0.0'
+  s.version     = MasterUtil::VERSION
   s.date        = '2014-09-23'
   s.summary     = "MasterUtil!"
   s.description = "master-util gem"
