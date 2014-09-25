@@ -5,11 +5,17 @@ module MasterUtil
       receiver.gsub! /\r|\n|\t/, ''
       imgs_rex = /<img\s.*?\s?src\s*=\s*['|"]?([^\s'"]+).*?>/i
       img_rex = /<img[^>]*>/i 
-      if !receiver.match(img_rex)
-        article_element << { type: "text", content: receiver}
+      v_rex = /<embed[^>]*>/i
+      vid_rex = /<embed[^>]*?url=([\s\S]+?)(?=\s)[\s\S]*?coverurl=([\s\S]+?)(?=\s)[\s\S]*?>/
+      if !receiver.match(v_rex) && !receiver.match(img_rex)
+        article_element << { type: "text", content: receiver }
       else
+        a_links = receiver.scan(v_rex)
         imgs_src = receiver.scan(img_rex)
         img_and_anchor_ary = []
+        a_links.each do |a_link|
+          img_and_anchor_ary << { type:"video", start_index: receiver.index(a_link), content: a_link }
+        end
         imgs_src.each do |img_src|
           img_and_anchor_ary << { type:"img", start_index: receiver.index(img_src), content: img_src } 
         end
@@ -18,7 +24,11 @@ module MasterUtil
           if index == 0
             article_element << { type: "text", content: receiver[0, se[:start_index]] }
           end
-          article_element << { type: "image", url: se[:content].scan(imgs_rex)[0][0] }
+          article_element << if se[:type] == 'video'
+            { type: "video", url: se[:content].scan(vid_rex)[0][0], coverurl: se[:content].scan(vid_rex)[0][1] }
+          else
+            { type: "image", url: se[:content].scan(imgs_rex)[0][0] }
+          end
           se_end_index = se[:start_index] + se[:content].length
           article_element << if index == img_and_anchor_ary.length - 1
             { type: "text", content: receiver[se_end_index, receiver.length - se_end_index] }
