@@ -9,7 +9,7 @@ module MasterUtil
     #a_rex = /<a[^>]+>[^>]+a>/
     img_rex = /<img[^>]*>/i 
     v_rex = /<embed[^>]*>/i
-    vid_rex = /<embed[^>]*?url\s*=\s*['|"]?([^\s'"]+).*?coverurl\s*=\s*['|"]?([^\s'"]+).*?>/
+    vid_rex = /<embed[^>]*?url\s*=\s*['|"]?([^\s'"]+).*?coverurl\s*=\s*['|"]?([^\s'"]+).*?>/i
     if !receiver.match(v_rex) && !receiver.match(img_rex)
       article_element << { type: "text", content: receiver }
     else
